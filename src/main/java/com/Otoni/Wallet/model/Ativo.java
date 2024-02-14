@@ -14,7 +14,7 @@ public class Ativo {
     @Enumerated(EnumType.STRING)
     private TipoAtivo tipo;
     @OneToMany(mappedBy = "ativo", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Compras> compras = new ArrayList<>();
+    private List<Compras> listaCompras = new ArrayList<>();
 
     public Ativo(){}
 
@@ -31,8 +31,8 @@ public class Ativo {
         return tipo;
     }
 
-    public List<Compras> getCompras() {
-        return compras;
+    public List<Compras> getListaCompras() {
+        return listaCompras;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class Ativo {
         return
                 "ticker =" + ticker +
                 ", tipo = " + tipo +
-                ", compras = " + compras
+                ", compras = " + listaCompras
                 ;
 
     }

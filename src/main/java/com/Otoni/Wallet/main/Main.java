@@ -75,9 +75,11 @@ public class Main {
         System.out.println("Digite ticker para busca:");
         var ticker = scanner.nextLine();
         Optional<Ativo> ativoEncontrado = repository.findByTickerContainingIgnoreCase(ticker);
+
         if (ativoEncontrado.isPresent()){
-            var ativoEncontradoCompras = ativoEncontrado.get().getCompras();
+            var ativoEncontradoCompras = ativoEncontrado.get().getListaCompras();
             System.out.println(ativoEncontradoCompras);
+
             if (ativoEncontradoCompras != null){
                 for (Compras i : ativoEncontradoCompras){
                     quantidadeTotal += i.getQuantidade();
@@ -114,8 +116,8 @@ public class Main {
     private void cadastrarCompra() {
         System.out.println("Digite ticker:");
         var ticker = scanner.nextLine();
-        Optional<Ativo> ativo = repository.findByTickerContainingIgnoreCase(ticker);
-        if (ativo.isPresent()) {
+        Optional<Ativo> ativoBuscado = repository.findByTickerContainingIgnoreCase(ticker);
+        if (ativoBuscado.isPresent()) {
             System.out.println("Digite a data:");
             var data = scanner.nextLine();
             System.out.println("Digite preço");
@@ -126,11 +128,11 @@ public class Main {
             var emolumentos = scanner.nextDouble();
 
             Compras novaCompra = new Compras(data,preco,quantidade,emolumentos);
-            novaCompra.setAtivo(ativo.get());
-            ativo.get().getCompras().add(novaCompra);
-            repository.save(ativo.get());
+            novaCompra.setAtivo(ativoBuscado.get());
+            ativoBuscado.get().getListaCompras().add(novaCompra);
+            repository.save(ativoBuscado.get());
         } else {
-            System.out.println("Ativo não encontrado");
+            System.out.println(ticker + " Não encontrado");
         }
     }
 
