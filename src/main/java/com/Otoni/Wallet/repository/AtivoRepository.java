@@ -1,10 +1,8 @@
 package com.Otoni.Wallet.repository;
 
 import com.Otoni.Wallet.model.Ativo;
-import com.Otoni.Wallet.model.Compras;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 

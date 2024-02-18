@@ -1,22 +1,19 @@
 package com.Otoni.Wallet.main;
 
+import com.Otoni.Wallet.calc.Calc;
 import com.Otoni.Wallet.model.Ativo;
 import com.Otoni.Wallet.model.Compras;
 import com.Otoni.Wallet.model.TipoAtivo;
 import com.Otoni.Wallet.repository.AtivoRepository;
-import com.Otoni.Wallet.service.Search;
 
-import java.text.NumberFormat;
-import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.Scanner;
 
 public class Main {
-    Locale localBrasil = new Locale("pt", "BR");
-    Search search = new Search();
+
+    Calc calc = new Calc();
     private final AtivoRepository repository;
-    private Scanner scanner = new Scanner(System.in);
+    Scanner scanner = new Scanner(System.in);
 
     public Main(AtivoRepository repository) {
         this.repository = repository;
@@ -33,6 +30,7 @@ public class Main {
                    1- Cadastrar ativo
                    2- Cadastrar compra
                    3- Buscar ativo
+                   4- Excluir ativo
                    0- Sair
                    """;
 
@@ -50,6 +48,9 @@ public class Main {
                case 3:
                    buscarAtivo();
                    break;
+               case 4:
+                   deletarAtivo();
+                   break;
                case 0:
                    System.out.println("Encerrando....");
                    break;
@@ -60,17 +61,9 @@ public class Main {
        }
     }
 
-    private String formatCurrency(double value){
-        return NumberFormat.getCurrencyInstance(localBrasil).format(value);
-    }
+
 
     private void buscarAtivo() {
-        int quantidadeTotal = 0;
-        double liquidoTotal = 0;
-        double precoMedio = 0;
-        double preçoMercado = 0;
-        double valorMercado = 0;
-        double lucro = 0;
 
         System.out.println("Digite ticker para busca:");
         var ticker = scanner.nextLine();
@@ -80,32 +73,8 @@ public class Main {
             var ativoEncontradoCompras = ativoEncontrado.get().getListaCompras();
             System.out.println(ativoEncontradoCompras);
 
-            if (ativoEncontradoCompras != null){
-                for (Compras i : ativoEncontradoCompras){
-                    quantidadeTotal += i.getQuantidade();
-                    liquidoTotal += i.getLiquido();
-                }
-                precoMedio = liquidoTotal / quantidadeTotal;
-                preçoMercado = search.findPrice(ativoEncontrado.get().getTicker());
-                valorMercado = quantidadeTotal * preçoMercado;
-                lucro = valorMercado - liquidoTotal;
-
-                System.out.println("( " + ativoEncontrado.get().getTicker() + " ) " +
-                        " ( Quantidade total: " + quantidadeTotal + " ) " +
-                        " ( Liquido Total: " + formatCurrency(liquidoTotal) + " ) " +
-                        " ( Preço Médio: " + formatCurrency(precoMedio) + " ) " + " || " +
-                        " ( Preço Mercado: " + formatCurrency(preçoMercado) + " ) " +
-                        " ( Valor Mercado: " + formatCurrency(valorMercado) + " ) " +
-                        " (Lucro ou perda : " + formatCurrency(lucro) + " ) "
-                );
-
-                quantidadeTotal = 0;
-                liquidoTotal = 0;
-                precoMedio = 0;
-                preçoMercado = 0;
-                valorMercado = 0;
-                lucro = 0;
-            }
+            System.out.println(calc.calculaTotal(ativoEncontrado));
+            calc.clear();
 
         }else {
             System.out.println(ticker + " Não encontrado");
@@ -151,6 +120,19 @@ public class Main {
             cadastrarNovo = scanner.nextLine();
 
 
+        }
+    }
+    private void deletarAtivo () {
+        System.out.println("Digite ticker para excluir:");
+        var ticker = scanner.nextLine();
+        Optional<Ativo> ativoEncontrado = repository.findByTickerContainingIgnoreCase(ticker);
+        if (ativoEncontrado.isPresent()){
+            var ativoEncontradoCompras = ativoEncontrado.get();
+
+            repository.delete(ativoEncontradoCompras);
+            System.out.println(ativoEncontradoCompras.getTicker().toUpperCase() + " Deletado");
+        }else {
+            System.out.println(ticker + " Não encontrado");
         }
     }
 }
