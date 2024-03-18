@@ -38,9 +38,9 @@ public class Ativo {
     @Override
     public String toString() {
         return
-                "ticker =" + ticker +
+                "\n" + "ticker = " + ticker +
                 ", tipo = " + tipo +
-                ", compras = " + listaCompras
+                ", compras = " + "\n" + listaCompras
                 ;
 
     }

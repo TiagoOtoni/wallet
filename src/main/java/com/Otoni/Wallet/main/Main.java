@@ -6,6 +6,7 @@ import com.Otoni.Wallet.model.Compras;
 import com.Otoni.Wallet.model.TipoAtivo;
 import com.Otoni.Wallet.repository.AtivoRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -31,6 +32,7 @@ public class Main {
                    2- Cadastrar compra
                    3- Buscar ativo
                    4- Excluir ativo
+                   5- Listar ativos
                    0- Sair
                    """;
 
@@ -51,6 +53,9 @@ public class Main {
                case 4:
                    deletarAtivo();
                    break;
+               case 5:
+                   listarAtivos();
+                   break;
                case 0:
                    System.out.println("Encerrando....");
                    break;
@@ -61,6 +66,10 @@ public class Main {
        }
     }
 
+    private void listarAtivos() {
+        List<Ativo> todosAtivos = repository.findAll();
+        System.out.println(todosAtivos);
+    }
 
 
     private void buscarAtivo() {
